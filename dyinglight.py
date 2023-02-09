@@ -1,6 +1,6 @@
 import time
 from pynput.keyboard import Controller as Keyboard
-from pynput.keyboard import GlobalHotKeys, Key
+from pynput.keyboard import GlobalHotKeys, Key, Listener
 
 
 class KeyboardFun:
@@ -27,6 +27,7 @@ class KeyboardFun:
 	def exit_out(self):
 		"""This will clear key holds and exit"""
 		self.Keyboard.release(Key.shift)
+		self.running = False
 		self.program_running = False
 
 	def toggle_shift(self, stop=False):
@@ -44,16 +45,22 @@ class KeyboardFun:
 			self.Keyboard.press(Key.shift)
 			self.Keyboard.press('w')
 		now = time.time()
+		was_running = False
 		while self.running:
-			if time.time() - now > 20:
+			if time.time() - now > 23:
 				self.Keyboard.release('w')
+				self.Keyboard.release(Key.shift)
 				time.sleep(2)
+				self.Keyboard.press(Key.shift)
 				self.Keyboard.press('w')
 				now = time.time()
 			time.sleep(0.3)
 			self.Keyboard.tap('c')
+			was_running = True
 		self.Keyboard.release(Key.shift)
-		self.Keyboard.release('w')
+		if was_running:
+			self.Keyboard.release('w')
+			was_running = False
 
 
 if __name__ == '__main__':
